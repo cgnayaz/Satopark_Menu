@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şatopark — Yönetim Paneli</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0f0f0f;
+            --bg-card: #1a1a1a;
+            --bg-input: #222;
+            --bg-hover: #252525;
+            --text: #e8e8e8;
+            --text-dim: #888;
+            --text-muted: #555;
+            --accent: #c9a96e;
+            --accent-hover: #ddbf88;
+            --danger: #c0392b;
+            --danger-hover: #e74c3c;
+            --border: #2a2a2a;
+            --radius: 10px;
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== LOGIN SCREEN ===== */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .login-card .subtitle {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #111;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.5rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-edit {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.5rem 0.8rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-edit:hover {
+            background: var(--accent);
+            color: #111;
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            min-height: 1.2rem;
+        }
+
+        /* ===== ADMIN DASHBOARD ===== */
+        .dashboard {
+            display: none;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-card);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .top-bar h2 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--accent);
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .user-email {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* Category Tabs */
+        .cat-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .cat-tab {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: var(--font-sans);
+        }
+
+        .cat-tab:hover {
+            color: var(--text);
+        }
+
+        .cat-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .toolbar h3 {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: #111;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-add:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Item Cards */
+        .item-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            transition: border-color 0.2s;
+        }
+
+        .item-card:hover {
+            border-color: #3a3a3a;
+        }
+
+        .item-card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-card-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+        }
+
+        .item-card-desc {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 400px;
+        }
+
+        .item-card-price {
+            font-size: 0.95rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin: 0 1.5rem;
+            white-space: nowrap;
+        }
+
+        .item-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem 2rem 1.5rem;
+            animation: modalIn 0.25s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .modal h3 {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: var(--font-sans);
+            outline: none;
+        }
+
+        .modal .form-group select:focus {
+            border-color: var(--accent);
+        }
+
+        .modal .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: var(--font-sans);
+            outline: none;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal .form-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions .btn-primary {
+            width: auto;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            padding: 0.8rem 1.2rem;
+            background: #1e7e34;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 400;
+            animation: toastIn 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .top-bar {
+                padding: 1rem 1.25rem;
+            }
+
+            .top-bar h2 {
+                font-size: 1.1rem;
+            }
+
+            .user-email {
+                display: none;
+            }
+
+            .content {
+                padding: 1.5rem 1rem 3rem;
+            }
+
+            .item-card {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .item-card-desc {
+                max-width: 100%;
+            }
+
+            .item-card-price {
+                margin: 0;
+            }
+
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1>Şatopark</h1>
+            <p class="subtitle">Yönetim Paneli</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-posta</label>
+                    <input type="email" id="email" placeholder="admin@satopark.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" placeholder="••••••••" required
+                        autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary">Giriş Yap</button>
+            </form>
+            <p class="login-error" id="loginError"></p>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN DASHBOARD (hidden until login) ===== -->
+    <div class="dashboard" id="dashboard">
+        <div class="top-bar">
+            <h2>Şatopark Admin</h2>
+            <div class="top-bar-actions">
+                <span class="user-email" id="userEmail"></span>
+                <button class="btn btn-outline" id="btnLogout">Çıkış</button>
+                <a href="index.html" class="btn btn-outline">Menüyü Gör</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Category filter tabs -->
+            <div class="cat-tabs" id="catTabs">
+                <button class="cat-tab active" data-cat="all">Tümü</button>
+                <button class="cat-tab" data-cat="corbalar">Çorbalar</button>
+                <button class="cat-tab" data-cat="kebaplar">Kebaplar</button>
+                <button class="cat-tab" data-cat="icecekler">İçecekler</button>
+                <button class="cat-tab" data-cat="tatlilar">Tatlılar</button>
+            </div>
+
+            <div class="toolbar">
+                <h3 id="itemCount">0 ürün</h3>
+                <button class="btn btn-add" id="btnAdd">+ Yeni Ürün</button>
+            </div>
+
+            <!-- Items list — populated in real-time from Firestore -->
+            <div id="itemsList"></div>
+        </div>
+    </div>
+
+    <!-- ===== ADD / EDIT MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3 id="modalTitle">Yeni Ürün Ekle</h3>
+            <form id="itemForm">
+                <input type="hidden" id="itemId">
+                <div class="form-group">
+                    <label for="itemName">Ürün Adı</label>
+                    <input type="text" id="itemName" placeholder="Adana Kebap" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemDesc">Açıklama</label>
+                    <textarea id="itemDesc" placeholder="Ürün açıklaması..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice">Fiyat (₺)</label>
+                    <input type="number" id="itemPrice" placeholder="250" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="itemCategory">Kategori</label>
+                    <select id="itemCategory" required>
+                        <option value="corbalar">Çorbalar</option>
+                        <option value="kebaplar">Kebaplar</option>
+                        <option value="icecekler">İçecekler</option>
+                        <option value="tatlilar">Tatlılar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemOrder">Sıralama</label>
+                    <input type="number" id="itemOrder" placeholder="1" value="0" min="0">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" id="btnCancel">İptal</button>
+                    <button type="submit" class="btn btn-primary" id="btnSave">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toasts"></div>
+
+    <!-- =====================================================
+         FIREBASE v9 MODULAR SDK — ADMIN PANEL
+         ===================================================== -->
+    <script type="module">
+        // -------------------------------------------------------
+        // 1) FIREBASE CONFIG — paste your own config values below
+        //    Must match the config used in index.html
+        // -------------------------------------------------------
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+
+        // Authentication imports
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+            from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+        // Firestore imports for CRUD operations
+        import {
+            getFirestore, collection, doc, addDoc, updateDoc, deleteDoc,
+            query, orderBy, onSnapshot
+        }
+            from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            // ⚠️  PASTE YOUR FIREBASE CONFIG HERE  ⚠️
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // 2) Initialize Firebase, Auth & Firestore
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // -------------------------------------------------------
+        // 3) DOM REFERENCES
+        // -------------------------------------------------------
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const userEmailEl = document.getElementById('userEmail');
+        const btnLogout = document.getElementById('btnLogout');
+        const btnAdd = document.getElementById('btnAdd');
+        const itemsList = document.getElementById('itemsList');
+        const itemCount = document.getElementById('itemCount');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const itemForm = document.getElementById('itemForm');
+        const btnCancel = document.getElementById('btnCancel');
+        const catTabs = document.getElementById('catTabs');
+
+        let activeCat = 'all';   // current category filter
+        let allItems = [];      // cached snapshot data
+
+        // -------------------------------------------------------
+        // 4) AUTHENTICATION — login, logout & auth state observer
+        // -------------------------------------------------------
+
+        // Listen for auth state changes (persists across refreshes)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in — show dashboard
+                loginScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                userEmailEl.textContent = user.email;
+                startRealtimeListener();
+            } else {
+                // User is signed out — show login
+                loginScreen.style.display = 'flex';
+                dashboard.style.display = 'none';
+            }
+        });
+
+        // Handle login form submit
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginError.textContent = '';
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (err) {
+                // Show friendly error messages
+                const msgs = {
+                    'auth/user-not-found': 'Kullanıcı bulunamadı.',
+                    'auth/wrong-password': 'Yanlış şifre.',
+                    'auth/invalid-email': 'Geçersiz e-posta.',
+                    'auth/too-many-requests': 'Çok fazla deneme. Lütfen bekleyin.',
+                    'auth/invalid-credential': 'Geçersiz kimlik bilgileri.',
+                };
+                loginError.textContent = msgs[err.code] || 'Giriş başarısız: ' + err.message;
+            }
+        });
+
+        // Handle logout
+        btnLogout.addEventListener('click', () => signOut(auth));
+
+        // -------------------------------------------------------
+        // 5) REAL-TIME LISTENER — reads "menuItems" collection
+        // -------------------------------------------------------
+        let unsubscribe = null;
+
+        function startRealtimeListener() {
+            if (unsubscribe) return; // already listening
+
+            const q = query(collection(db, 'menuItems'), orderBy('order', 'asc'));
+
+            // onSnapshot provides real-time updates
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                allItems = [];
+                snapshot.forEach(d => allItems.push({ id: d.id, ...d.data() }));
+                renderItems();
+            });
+        }
+
+        // -------------------------------------------------------
+        // 6) RENDER ITEMS — filtered by active category tab
+        // -------------------------------------------------------
+        const catLabels = {
+            corbalar: 'Çorbalar', kebaplar: 'Kebaplar',
+            icecekler: 'İçecekler', tatlilar: 'Tatlılar'
+        };
+
+        function renderItems() {
+            const filtered = activeCat === 'all'
+                ? allItems
+                : allItems.filter(i => i.category === activeCat);
+
+            itemCount.textContent = `${filtered.length} ürün`;
+
+            if (filtered.length === 0) {
+                itemsList.innerHTML = '<div class="empty-state">Henüz ürün eklenmemiş.</div>';
+                return;
+            }
+
+            itemsList.innerHTML = filtered.map(item => `
+                <div class="item-card" data-id="${item.id}">
+                    <div class="item-card-info">
+                        <div class="item-card-name">${esc(item.name)}</div>
+                        <div class="item-card-desc">${esc(item.description || '')}
+                            <span style="color:var(--text-muted);margin-left:0.5rem;font-size:0.7rem;">${catLabels[item.category] || item.category}</span>
+                        </div>
+                    </div>
+                    <span class="item-card-price">₺${item.price}</span>
+                    <div class="item-card-actions">
+                        <button class="btn btn-edit" onclick="window._editItem('${item.id}')">Düzenle</button>
+                        <button class="btn btn-danger" onclick="window._deleteItem('${item.id}','${esc(item.name)}')">Sil</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+        // -------------------------------------------------------
+        // 7) CATEGORY TABS
+        // -------------------------------------------------------
+        catTabs.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('cat-tab')) return;
+            catTabs.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            e.target.classList.add('active');
+            activeCat = e.target.dataset.cat;
+            renderItems();
+        });
+
+        // -------------------------------------------------------
+        // 8) MODAL — open / close
+        // -------------------------------------------------------
+        function openModal(title = 'Yeni Ürün Ekle') {
+            modalTitle.textContent = title;
+            modalOverlay.classList.add('open');
+        }
+        function closeModal() {
+            modalOverlay.classList.remove('open');
+            itemForm.reset();
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemOrder').value = '0';
+        }
+
+        btnAdd.addEventListener('click', () => openModal('Yeni Ürün Ekle'));
+        btnCancel.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+
+        // -------------------------------------------------------
+        // 9) CREATE & UPDATE — Firestore CRUD
+        // -------------------------------------------------------
+        itemForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('itemId').value;
+            const data = {
+                name: document.getElementById('itemName').value.trim(),
+                description: document.getElementById('itemDesc').value.trim(),
+                price: Number(document.getElementById('itemPrice').value),
+                category: document.getElementById('itemCategory').value,
+                order: Number(document.getElementById('itemOrder').value) || 0,
+            };
+
+            try {
+                if (id) {
+                    // UPDATE existing document
+                    await updateDoc(doc(db, 'menuItems', id), data);
+                    toast('Ürün güncellendi ✓');
+                } else {
+                    // CREATE new document
+                    await addDoc(collection(db, 'menuItems'), data);
+                    toast('Ürün eklendi ✓');
+                }
+                closeModal();
+            } catch (err) {
+                toast('Hata: ' + err.message, true);
+            }
+        });
+
+        // -------------------------------------------------------
+        // 10) EDIT — populate modal with existing data
+        // -------------------------------------------------------
+        window._editItem = function (id) {
+            const item = allItems.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('itemId').value = id;
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemDesc').value = item.description || '';
+            document.getElementById('itemPrice').value = item.price;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemOrder').value = item.order || 0;
+            openModal('Ürünü Düzenle');
+        };
+
+        // -------------------------------------------------------
+        // 11) DELETE — remove document from Firestore
+        // -------------------------------------------------------
+        window._deleteItem = async function (id, name) {
+            if (!confirm(`"${name}" silinsin mi?`)) return;
+            try {
+                await deleteDoc(doc(db, 'menuItems', id));
+                toast('Ürün silindi');
+            } catch (err) {
+                toast('Silinemedi: ' + err.message, true);
+            }
+        };
+
+        // -------------------------------------------------------
+        // 12) TOAST NOTIFICATIONS
+        // -------------------------------------------------------
+        function toast(msg, isError = false) {
+            const el = document.createElement('div');
+            el.className = 'toast' + (isError ? ' error' : '');
+            el.textContent = msg;
+            document.getElementById('toasts').appendChild(el);
+            setTimeout(() => el.remove(), 3000);
+        }
+    </script>
+</body>
+
+</html>

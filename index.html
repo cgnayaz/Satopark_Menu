@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Şatopark Restoran — Midyat, Mardin. Geleneksel Mezopotamya lezzetleri ve seçkin mutfak deneyimi.">
+    <title>Şatopark — Menü</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --color-bg: #fafaf8;
+            --color-white: #ffffff;
+            --color-text: #1a1a1a;
+            --color-text-secondary: #6b6b6b;
+            --color-text-light: #999999;
+            --color-border: #e8e6e1;
+            --color-border-light: #f0eeea;
+            --color-accent: #8b7355;
+            --color-accent-light: #a8956f;
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, 'Segoe UI', Helvetica, sans-serif;
+            --max-width: 680px;
+            --transition: 0.25s ease;
+        }
+
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-weight: 300; }
+
+        /* ===== HEADER ===== */
+        .header { text-align: center; padding: 5rem 1.5rem 3rem; background: var(--color-white); border-bottom: 1px solid var(--color-border); }
+        .header-label { font-size: 0.7rem; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1rem; }
+        .header h1 { font-family: var(--font-serif); font-size: clamp(2.8rem, 7vw, 4rem); font-weight: 400; letter-spacing: 1px; line-height: 1.15; }
+        .header-divider { width: 40px; height: 1px; background: var(--color-accent); margin: 1.25rem auto; }
+        .header-location { font-size: 0.8rem; font-weight: 300; color: var(--color-text-light); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* ===== STICKY NAV ===== */
+        .category-nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--color-border-light); display: flex; justify-content: center; overflow-x: auto; scrollbar-width: none; }
+        .category-nav::-webkit-scrollbar { display: none; }
+        .nav-link { display: inline-block; padding: 0.9rem 1.5rem; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: var(--color-text-light); text-decoration: none; border: none; border-bottom: 1.5px solid transparent; transition: color var(--transition), border-color var(--transition); white-space: nowrap; cursor: pointer; background: none; }
+        .nav-link:hover { color: var(--color-text); }
+        .nav-link.active { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+
+        /* ===== MAIN ===== */
+        .menu-wrapper { max-width: var(--max-width); margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+        /* ===== CATEGORY ===== */
+        .category { padding-top: 3.5rem; }
+        .category-header { text-align: center; margin-bottom: 2.5rem; }
+        .category-title { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 400; letter-spacing: 0.5px; }
+        .category-subtitle { font-size: 0.75rem; font-weight: 300; color: var(--color-text-light); letter-spacing: 2px; text-transform: uppercase; margin-top: 0.4rem; }
+        .category-line { width: 30px; height: 1px; background: var(--color-border); margin: 1rem auto 0; }
+
+        /* ===== MENU ITEM ===== */
+        .menu-item { display: flex; justify-content: space-between; align-items: baseline; padding: 1.1rem 0; border-bottom: 1px solid var(--color-border-light); opacity: 0; transform: translateY(12px); transition: background-color var(--transition); }
+        .menu-item.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease, background-color var(--transition); }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:hover { background: rgba(139,115,85,0.03); padding-left: 0.5rem; padding-right: 0.5rem; margin-left: -0.5rem; margin-right: -0.5rem; border-radius: 6px; }
+        .item-details { flex: 1; min-width: 0; padding-right: 1.5rem; }
+        .item-name { font-size: 0.95rem; font-weight: 500; line-height: 1.4; }
+        .item-description { font-size: 0.82rem; font-weight: 300; color: var(--color-text-secondary); margin-top: 0.2rem; line-height: 1.5; }
+        .item-price { font-size: 0.9rem; font-weight: 400; color: var(--color-accent); white-space: nowrap; flex-shrink: 0; }
+
+        /* ===== LOADING ===== */
+        .loading-indicator { text-align: center; padding: 3rem 0; color: var(--color-text-light); font-size: 0.85rem; letter-spacing: 1px; }
+        .loading-indicator::after { content: ''; display: block; width: 24px; height: 24px; border: 2px solid var(--color-border); border-top-color: var(--color-accent); border-radius: 50%; margin: 1rem auto 0; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-msg { text-align: center; padding: 2rem 0; color: var(--color-text-light); font-size: 0.82rem; font-style: italic; }
+
+        /* ===== FOOTER ===== */
+        .footer { text-align: center; padding: 3rem 1.5rem; border-top: 1px solid var(--color-border); background: var(--color-white); }
+        .footer-name { font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 0.3rem; }
+        .footer-info { font-size: 0.75rem; font-weight: 300; color: var(--color-text-light); letter-spacing: 1px; }
+        .footer-copy { font-size: 0.7rem; color: var(--color-text-light); margin-top: 1.2rem; }
+        .admin-link { display: inline-block; margin-top: 1rem; font-size: 0.7rem; color: var(--color-text-light); text-decoration: none; opacity: 0.4; transition: opacity var(--transition); }
+        .admin-link:hover { opacity: 1; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .header { padding: 3.5rem 1.25rem 2.5rem; }
+            .nav-link { padding: 0.8rem 1rem; font-size: 0.7rem; letter-spacing: 1.5px; }
+            .category { padding-top: 2.5rem; }
+            .category-title { font-size: 1.35rem; }
+            .menu-wrapper { padding: 0 1.25rem 4rem; }
+            .menu-item { padding: 0.9rem 0; }
+        }
+        @media (min-width: 768px) {
+            .header { padding: 6rem 2rem 3.5rem; }
+            .nav-link { padding: 1rem 2rem; }
+            .category { padding-top: 4rem; }
+            .category-header { margin-bottom: 3rem; }
+            .menu-item { padding: 1.25rem 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="top">
+        <p class="header-label">Restoran &amp; Kafe</p>
+        <h1>Şatopark</h1>
+        <div class="header-divider"></div>
+        <p class="header-location">Midyat, Mardin — Türkiye</p>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="category-nav" id="categoryNav">
+        <button class="nav-link active" data-target="corbalar">Çorbalar</button>
+        <button class="nav-link" data-target="kebaplar">Kebaplar</button>
+        <button class="nav-link" data-target="icecekler">İçecekler</button>
+        <button class="nav-link" data-target="tatlilar">Tatlılar</button>
+    </nav>
+
+    <!-- MENU — items are loaded dynamically from Firestore -->
+    <main class="menu-wrapper">
+        <section class="category" id="corbalar">
+            <div class="category-header">
+                <h2 class="category-title">Çorbalar</h2>
+                <p class="category-subtitle">Soups</p>
+                <div class="category-line"></div>
+            </div>
+            <div class="items-container"><div class="loading-indicator">Yükleniyor</div></div>
+        </section>
+
+        <section class="category" id="kebaplar">
+            <div class="category-header">
+                <h2 class="category-title">Kebaplar</h2>
+                <p class="category-subtitle">Kebabs</p>
+                <div class="category-line"></div>
+            </div>
+            <div class="items-container"><div class="loading-indicator">Yükleniyor</div></div>
+        </section>
+
+        <section class="category" id="icecekler">
+            <div class="category-header">
+                <h2 class="category-title">İçecekler</h2>
+                <p class="category-subtitle">Beverages</p>
+                <div class="category-line"></div>
+            </div>
+            <div class="items-container"><div class="loading-indicator">Yükleniyor</div></div>
+        </section>
+
+        <section class="category" id="tatlilar">
+            <div class="category-header">
+                <h2 class="category-title">Tatlılar</h2>
+                <p class="category-subtitle">Desserts</p>
+                <div class="category-line"></div>
+            </div>
+            <div class="items-container"><div class="loading-indicator">Yükleniyor</div></div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p class="footer-name">Şatopark</p>
+        <p class="footer-info">Midyat, Mardin — Türkiye</p>
+        <p class="footer-copy">© 2024 Şatopark Restoran. Tüm hakları saklıdır.</p>
+        <a href="admin.html" class="admin-link">Yönetim Paneli</a>
+    </footer>
+
+    <!-- =====================================================
+         FIREBASE v9 MODULAR SDK — MENU PAGE
+         ===================================================== -->
+    <script type="module">
+        // -------------------------------------------------------
+        // 1) FIREBASE CONFIG — paste your own config values below
+        // -------------------------------------------------------
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot }
+            from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            // ⚠️  PASTE YOUR FIREBASE CONFIG HERE  ⚠️
+            apiKey:            "YOUR_API_KEY",
+            authDomain:        "YOUR_PROJECT.firebaseapp.com",
+            projectId:         "YOUR_PROJECT_ID",
+            storageBucket:     "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId:             "YOUR_APP_ID"
+        };
+
+        // 2) Initialize Firebase & Firestore
+        const app = initializeApp(firebaseConfig);
+        const db  = getFirestore(app);
+
+        // -------------------------------------------------------
+        // 3) REAL-TIME LISTENER — listens to "menuItems" collection
+        //    and re-renders whenever data changes in Firestore
+        // -------------------------------------------------------
+        const categories = ['corbalar', 'kebaplar', 'icecekler', 'tatlilar'];
+
+        const q = query(collection(db, 'menuItems'), orderBy('order', 'asc'));
+
+        onSnapshot(q, (snapshot) => {
+            // Group items by category
+            const grouped = {};
+            categories.forEach(c => grouped[c] = []);
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (grouped[data.category]) {
+                    grouped[data.category].push(data);
+                }
+            });
+
+            // Render each category
+            categories.forEach(cat => {
+                const container = document.querySelector(`#${cat} .items-container`);
+                if (!container) return;
+
+                if (grouped[cat].length === 0) {
+                    container.innerHTML = '<p class="empty-msg">Bu kategoride henüz ürün yok.</p>';
+                    return;
+                }
+
+                container.innerHTML = grouped[cat].map(item => `
+                    <article class="menu-item">
+                        <div class="item-details">
+                            <div class="item-name">${escapeHtml(item.name)}</div>
+                            <div class="item-description">${escapeHtml(item.description || '')}</div>
+                        </div>
+                        <span class="item-price">₺${item.price}</span>
+                    </article>
+                `).join('');
+
+                // Re-apply fade-in animation
+                observeItems(container);
+            });
+        });
+
+        // -------------------------------------------------------
+        // 4) UTILITIES
+        // -------------------------------------------------------
+        function escapeHtml(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        function observeItems(container) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const items = container.querySelectorAll('.menu-item');
+                        const idx = Array.from(items).indexOf(entry.target);
+                        setTimeout(() => entry.target.classList.add('visible'), idx * 60);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+            container.querySelectorAll('.menu-item').forEach(item => observer.observe(item));
+        }
+
+        // -------------------------------------------------------
+        // 5) NAVIGATION — smooth scroll + active state on scroll
+        // -------------------------------------------------------
+        const nav      = document.getElementById('categoryNav');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.category');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const target = document.getElementById(link.dataset.target);
+                if (!target) return;
+                const y = target.getBoundingClientRect().top + window.scrollY - nav.offsetHeight - 8;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            });
+        });
+
+        function updateActiveNav() {
+            const offset = nav.offsetHeight + 40;
+            let currentId = '';
+            sections.forEach(s => { if (window.scrollY >= s.offsetTop - offset) currentId = s.id; });
+            navLinks.forEach(l => l.classList.toggle('active', l.dataset.target === currentId));
+        }
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) { window.requestAnimationFrame(() => { updateActiveNav(); ticking = false; }); ticking = true; }
+        });
+        updateActiveNav();
+    </script>
+</body>
+</html>
